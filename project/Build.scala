@@ -13,9 +13,15 @@ object ApplicationBuild extends Build {
     anorm
   )
 
+  def customLessEntryPoints(base: File): PathFinder = (
+      (base / "app" / "assets" / "stylesheets" / "bootstrap" * "bootstrap.less") +++
+      (base / "app" / "assets" / "stylesheets" / "bootstrap" * "responsive.less") +++
+      (base / "app" / "assets" / "stylesheets" * "*.less")
+  )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
     // Add your own project settings here      
+    lessEntryPoints <<= baseDirectory(customLessEntryPoints)
   )
 
 }
