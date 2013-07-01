@@ -3,9 +3,8 @@
 # ~~~~
 
 # Home page
-GET     /               controllers.Application.index
-GET     /page/*file     controllers.Pages.page(file)
-GET     /file           controllers.Application.file
+GET     /               controllers.Git.getIndexPage
+GET     /page/*file     controllers.Git.getPage(file)
 
 
 # Map static resources from the /public folder to the /assets URL path
