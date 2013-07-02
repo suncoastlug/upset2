@@ -10,7 +10,7 @@ object ApplicationBuild extends Build {
     // Add your project dependencies here,
     jdbc,
     anorm,
-    "org.markdownj" % "markdownj" % "0.3.0-1.0.2b4",
+    "org.pegdown"   % "pegdown" % "1.4.0",
     "org.eclipse.jgit" % "org.eclipse.jgit" % "2.3.1.201302201838-r",
     "org.gitective" % "gitective-core" % "0.9.9"
   )

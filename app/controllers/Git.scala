@@ -5,9 +5,10 @@ package controllers
 
 import play.api._
 import play.api.mvc._
-import com.petebevin.markdown.MarkdownProcessor
 import play.api.Play.current
+
 import java.io.File
+import org.pegdown.PegDownProcessor
 
 import models.git.GitRepository
 
@@ -21,7 +22,7 @@ object Git extends Controller {
 
   private lazy val repository = GitRepository(dir)
 
-  private lazy val markdownProcessor = new MarkdownProcessor()
+  private lazy val markdownProcessor = new PegDownProcessor
 
   private def withContent(path: String, branch: String)(f: String => Result) = Action {
     repository.getContent(path, branch) match {
@@ -42,7 +43,7 @@ object Git extends Controller {
     val mdPath = path.replaceAll("\\.html$", ".md")
 
     withContent(mdPath, "master") { c =>
-      Ok ( views.html.page(markdownProcessor.markdown(c)) )
+      Ok ( views.html.page(markdownProcessor.markdownToHtml(c)) )
     }
   }
 
