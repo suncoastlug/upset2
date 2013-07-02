@@ -6,11 +6,18 @@ package controllers
 import play.api._
 import play.api.mvc._
 import play.api.Play.current
+import play.api.libs.concurrent.Promise
+import play.api.libs.concurrent.Execution.Implicits._
+
+import scala.concurrent.duration._
+import scala.concurrent.Future
 
 import java.io.File
 import org.pegdown.PegDownProcessor
 
 import models.git.GitRepository
+import org.eclipse.jgit.transport.FetchResult
+
 
 object Git extends Controller {
 
@@ -51,6 +58,17 @@ object Git extends Controller {
     withContent(path, "master") { c =>
       Ok(c)
     }
+
+  def fetch = Action { 
+    val resultFuture  = scala.concurrent.Future { Right(repository.fetch) }
+    val timeoutFuture = Promise.timeout(Left("git fetch timed out"), 2.seconds)
+    Async {
+      Future.firstCompletedOf(Seq(resultFuture, timeoutFuture)).map {
+        case Right(result) => Ok(views.html.git.fetch(result))
+        case Left(error)   => InternalServerError(error)
+      }
+    }
+  }
   
 
 }
