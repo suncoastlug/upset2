@@ -23,18 +23,29 @@ object Git extends Controller {
 
   private lazy val markdownProcessor = new MarkdownProcessor()
 
-  def initialize = if (!dir.exists) GitRepository.clone(uri, dir)
-
-  def getIndexPage = TODO
-
-  def getPage(path: String) = Action { 
-    repository.getContent(path, "master") match {
-      case None => NotFound("unable to find page " + path)
-      case Some(body) => Ok( views.html.page(markdownProcessor.markdown(body)) )
+  private def withContent(path: String, branch: String)(f: String => Result) = Action {
+    repository.getContent(path, branch) match {
+      case None          => NotFound(path + " not found")
+      case Some(content) => f(content)
     }
   }
 
-  def getImage(path: String) = TODO
+  def initialize = if (!dir.exists) GitRepository.clone(uri, dir)
+
+  def getRoot = getPage("index.html")
+
+  def getPage(path: String) = {
+    val mdPath = path.replaceAll("\\.html$", ".md")
+
+    withContent(mdPath, "master") { c =>
+      Ok ( views.html.page(markdownProcessor.markdown(c)) )
+    }
+  }
+
+  def getRaw(path: String) =
+    withContent(path, "master") { c =>
+      Ok(c)
+    }
   
 
 }
