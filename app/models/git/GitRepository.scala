@@ -1,6 +1,8 @@
 package models.git
 
 import org.eclipse.jgit.api.CloneCommand
+import org.eclipse.jgit.api.Git
+
 import java.io.File
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder
 import org.eclipse.jgit.lib.Repository
@@ -12,7 +14,7 @@ object GitRepository {
   def apply(directory: File) = new GitRepository(new FileRepository(directory))
 
   def clone(uri: String, directory: File): GitRepository = {
-    val repo = new CloneCommand()
+    val repo = Git.cloneRepository
       .setURI(uri)
       .setBare(true)
       .setCloneAllBranches(true)
@@ -25,9 +27,13 @@ object GitRepository {
 }
 
 class GitRepository private[git] (repository: Repository) {
+
+  private lazy val git = new Git(repository) 
   
   def getContent(path: String, branch: String = "master"): Option[String] =
     Option(BlobUtils.getContent(repository, branch, path))
+
+  def fetch() = git.fetch.call()
     
   def isBare() = repository.isBare()
 

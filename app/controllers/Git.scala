@@ -30,7 +30,11 @@ object Git extends Controller {
     }
   }
 
-  def initialize = if (!dir.exists) GitRepository.clone(uri, dir)
+  def initialize = 
+    if (!dir.exists) 
+      GitRepository.clone(uri, dir)
+    else
+      repository.fetch()
 
   def getRoot = getPage("index.html")
 
