@@ -1,9 +1,13 @@
 logs
 project/project
 project/target
+/target
+/project
+/.target
 target
 tmp
 .history
+.cache
 dist
 /.idea
 /*.iml
@@ -13,3 +17,4 @@ dist
 /.project
 /RUNNING_PID
 /.settings
+/bin
