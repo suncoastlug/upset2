@@ -1,4 +1,4 @@
-@(message: String)
+@(message: String)(implicit request: RequestHeader)
 
 @main("SLUG Site") {
 	@play20.welcome(message)

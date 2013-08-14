@@ -1,0 +1,3 @@
+@(url: String, name: String)(implicit request: RequestHeader)
+<li @if(request.uri.equals(url)) { class="active" } ><a href="@url">@name</a></li>
+

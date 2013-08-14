@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(title: String)(content: Html)(implicit request: RequestHeader)
 <!DOCTYPE html>
 
 <html lang="en">
@@ -30,13 +30,13 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="#">SLUG</a>
+          <a class="brand" href="@routes.Git.root">SLUG</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="/page/lists.html">Mailing Lists</a></li>
-              <li><a href="/page/history.html">History</a></li>
-              <li><a href="/page/treasury.html">Treasury</a></li>
+              @link(routes.Git.root.toString, "Home")
+              @link(routes.Git.page("lists.html").toString, "Mailing Lists")
+              @link(routes.Git.page("history.html").toString, "History")
+              @link(routes.Git.page("treasury.html").toString, "Treasury")
             </ul>
           </div><!--/.nav-collapse -->
         </div>

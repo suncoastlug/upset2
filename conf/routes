@@ -3,11 +3,9 @@
 # ~~~~
 
 # Home page
-GET     /                    controllers.Git.getRoot
-GET     /page/:path          controllers.Git.getPage(path)
-GET     /raw/:path           controllers.Git.getRaw(path)
+GET     /                    controllers.Git.root
+GET     /page/:path          controllers.Git.page(path)
 GET     /git/fetch           controllers.Git.fetch()
-#POST    /git/fetch           controllers.Git.fetch()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file    controllers.Assets.at(path="/public", file)

@@ -31,35 +31,33 @@ object Git extends Controller {
 
   private lazy val markdownProcessor = new PegDownProcessor
 
-  private def withContent(path: String, branch: String)(f: String => Result) = Action {
-    repository.getContent(path, branch) match {
-      case None          => NotFound(path + " not found")
-      case Some(content) => f(content)
-    }
-  }
-
   def initialize = 
     if (!dir.exists) 
       GitRepository.clone(uri, dir)
     else
       repository.fetch()
 
-  def getRoot = getPage("index.html")
+  def root = page("index.html")
 
-  def getPage(path: String) = {
+  def page(path: String) = {
     val mdPath = path.replaceAll("\\.html$", ".md")
 
-    withContent(mdPath, "master") { c =>
-      Ok ( views.html.page(markdownProcessor.markdownToHtml(c)) )
+    Action { implicit request =>
+      repository.getContent(mdPath, "master") match {
+        case None          => NotFound(path + " not found")
+        case Some(c) => Ok ( views.html.page(markdownProcessor.markdownToHtml(c)) )
+      }
     }
   }
 
+  /*
   def getRaw(path: String) =
     withContent(path, "master") { c =>
       Ok(c)
     }
+  */
 
-  def fetch = Action { 
+  def fetch = Action { implicit request =>
     val resultFuture  = scala.concurrent.Future { Right(repository.fetch) }
     val timeoutFuture = Promise.timeout(Left("git fetch timed out"), 2.seconds)
     Async {
