@@ -8,17 +8,18 @@ import play.api.mvc._
 import play.api.Play.current
 import play.api.libs.concurrent.Promise
 import play.api.libs.concurrent.Execution.Implicits._
+import play.api.templates.Html
 
 import scala.concurrent.duration._
 import scala.concurrent.Future
 
 import java.io.File
-import org.pegdown.PegDownProcessor
 
 import models.git.GitRepository
 import org.eclipse.jgit.transport.FetchResult
 
-
+  
+ 
 object Git extends Controller {
 
   private val DEFAULT_GIT_URI = "git://github.com/suncoastlug/slug-pages.git"
@@ -29,13 +30,16 @@ object Git extends Controller {
 
   private lazy val repository = GitRepository(dir)
 
-  private lazy val markdownProcessor = new PegDownProcessor
-
   def initialize = 
     if (!dir.exists) 
       GitRepository.clone(uri, dir)
     else
       repository.fetch()
+
+
+  def menu: Html = Html {
+    repository.getContent("menu.html", "master").getOrElse("[no menu]")
+  }
 
   def root = page("index.html")
 
@@ -43,9 +47,11 @@ object Git extends Controller {
     val mdPath = path.replaceAll("\\.html$", ".md")
 
     Action { implicit request =>
-      repository.getContent(mdPath, "master") match {
+      repository.getPage(mdPath, "master") match {
         case None          => NotFound(path + " not found")
-        case Some(c) => Ok ( views.html.page(markdownProcessor.markdownToHtml(c)) )
+        case Some(p) => Ok {
+          views.html.git.page(p)
+        }
       }
     }
   }

@@ -33,6 +33,9 @@ class GitRepository private[git] (repository: Repository) {
   def getContent(path: String, branch: String = "master"): Option[String] =
     Option(BlobUtils.getContent(repository, branch, path))
 
+  def getPage(path: String, branch: String): Option[Page] =
+    getContent(path, branch).map(Page.parse(_, path))
+
   def fetch() = git.fetch.call()
     
   def isBare() = repository.isBare()

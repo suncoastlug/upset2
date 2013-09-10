@@ -12,7 +12,8 @@ object ApplicationBuild extends Build {
     anorm,
     "org.pegdown"   % "pegdown" % "1.4.0",
     "org.eclipse.jgit" % "org.eclipse.jgit" % "2.3.1.201302201838-r",
-    "org.gitective" % "gitective-core" % "0.9.9"
+    "org.gitective" % "gitective-core" % "0.9.9",
+    "org.ccil.cowan.tagsoup" % "tagsoup" % "1.1.3"
   )
 
   def customLessEntryPoints(base: File): PathFinder = (
