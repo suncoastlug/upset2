@@ -27,11 +27,10 @@ Some other text.
 This page has no title
 """
 
-
   "Page" should {
     "title" in {
-      Page.parse(markdown).title must_== "page title"
-      Page.parse(markdownNoTitle, "untitled").title must_== "untitled"
+      Page.parse(markdown).title must be equalTo( "page title" )
+      Page.parse(markdownNoTitle, "untitled").title must be equalTo("untitled")
     }
 
     "html" in {
