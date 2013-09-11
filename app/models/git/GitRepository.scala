@@ -1,17 +1,16 @@
 package models.git
 
-import org.eclipse.jgit.api.CloneCommand
 import org.eclipse.jgit.api.Git
-
-import java.io.File
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder
+import org.eclipse.jgit.lib.RepositoryBuilder
 import org.eclipse.jgit.lib.Repository
-import org.eclipse.jgit.storage.file.FileRepository
+
 import org.gitective.core.BlobUtils
 
+import java.io.File
+
 object GitRepository {
-  
-  def apply(directory: File) = new GitRepository(new FileRepository(directory))
+
+  def apply(directory: File) = new GitRepository(new RepositoryBuilder().setGitDir(directory).build())
 
   def clone(uri: String, directory: File): GitRepository = {
     val repo = Git.cloneRepository
@@ -30,21 +29,9 @@ class GitRepository private[git] (repository: Repository) {
 
   private lazy val git = new Git(repository) 
   
-  def getContent(path: String, branch: String = "master"): Option[String] =
+  def getContent(path: String, branch: String): Option[String] =
     Option(BlobUtils.getContent(repository, branch, path))
 
-  def getPage(path: String, branch: String): Option[Page] =
-    getContent(path, branch).map(Page.parse(_, path))
-
   def fetch() = git.fetch.call()
-    
-  def isBare() = repository.isBare()
 
-
-  
-  
-
-  
-  
-  
 }

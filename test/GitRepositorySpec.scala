@@ -22,24 +22,14 @@ class GitRepositorySpec extends Specification {
   "GitRepository" should {
     "clone" in {
       val repo = GitRepository.clone("git://github.com/suncoastlug/slug-pages.git", dir.toFile)
-        repo.isBare() must beTrue
+      dir.toFile.exists must beTrue
     }
-
-    "apply" in {
-      val repo = GitRepository(dir.toFile)
-      repo.isBare() must beTrue
-
-    }
-
+    
     "get file content" in {
       val repo = GitRepository(dir.toFile)
       val content : String = repo.getContent("README.md", "master").getOrElse("")
 
       content must contain("slug-pages")
     }
-
-
-
-
-    }
   }
+}

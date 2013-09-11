@@ -1,4 +1,4 @@
-package models.git
+package models
 
 import org.ccil.cowan.tagsoup.jaxp.SAXFactoryImpl
 

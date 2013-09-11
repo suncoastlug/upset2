@@ -1,0 +1,29 @@
+@(events: List[models.meetup.Event])==================================================
+Suncoast Linux Users Group (SLUG) Meeting Schedule
+==================================================
+
+@for(event <- events) {
+@event.name
+@Seq.fill(event.name.length)("-").mkString
+
+    @event.startText until @event.endText
+
+@event.desc
+    @event.venue.map { venue =>
+
+    Location:
+        @venue.name
+        @venue.address.mkString("\n")
+        @venue.city, @venue.state
+
+        @event.how_to_find_us
+
+    } 
+    RSVPs: @event.yes_rsvp_count people plan on attending @if(event.maybe_rsvp_count > 0) { (@event.maybe_rsvp_count additional people are thinking about it) }
+
+    Links:
+        * @event.event_url
+
+
+}
+@* vim: set et: *@

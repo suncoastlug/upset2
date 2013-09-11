@@ -3,6 +3,13 @@
  */
 package controllers
 
+import java.io.File
+
+import models.git.GitRepository
+import models.Page
+
+import org.eclipse.jgit.transport.FetchResult
+
 import play.api._
 import play.api.mvc._
 import play.api.Play.current
@@ -12,13 +19,6 @@ import play.api.templates.Html
 
 import scala.concurrent.duration._
 import scala.concurrent.Future
-
-import java.io.File
-
-import models.git.GitRepository
-import org.eclipse.jgit.transport.FetchResult
-
-  
  
 object Git extends Controller {
 
@@ -36,7 +36,6 @@ object Git extends Controller {
     else
       repository.fetch()
 
-
   def menu: Html = Html {
     repository.getContent("menu.html", "master").getOrElse("[no menu]")
   }
@@ -47,21 +46,14 @@ object Git extends Controller {
     val mdPath = path.replaceAll("\\.html$", ".md")
 
     Action { implicit request =>
-      repository.getPage(mdPath, "master") match {
-        case None          => NotFound(path + " not found")
-        case Some(p) => Ok {
-          views.html.git.page(p)
+      repository.getContent(mdPath, "master") match {
+        case None           => NotFound(path + " not found")
+        case Some(markdown) => Ok {
+          views.html.git.page( Page.parse(markdown, path) )
         }
       }
     }
   }
-
-  /*
-  def getRaw(path: String) =
-    withContent(path, "master") { c =>
-      Ok(c)
-    }
-  */
 
   def fetch = Action { implicit request =>
     val resultFuture  = scala.concurrent.Future { Right(repository.fetch) }
