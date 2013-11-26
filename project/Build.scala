@@ -5,6 +5,7 @@ import play.Project._
 object ApplicationBuild extends Build {
   val appName         = "Upset"
   val appVersion      = "2.2-SNAPSHOT"
+  val configFile      = "-Dconfig.file=" + Option(System.getProperty("config.file")).getOrElse("conf/application.conf")
 
   val appDependencies = Seq(
     // Add your project dependencies here,
@@ -31,8 +32,10 @@ object ApplicationBuild extends Build {
     scalaVersion := "2.10.0",
     testOptions in Test += Tests.Argument("sequential", "true"),
     testOptions in Test += Tests.Argument("junitxml", "console"),
+    javaOptions in Test += configFile,
 
     resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+
   )
 
 }
