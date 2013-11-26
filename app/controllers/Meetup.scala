@@ -32,18 +32,15 @@ object Meetup extends Controller {
     request => Ok(views.html.meetup.events(request))
   }
 
-  def eventsText() = Action {
-    Async {
-      val time = DateTime.now.millis + "," + (DateTime.now + 4.weeks).millis
-      WS.url(EVENTS_URL ? ("time" -> time)).get().map { response => 
-        try {
-          val events = (response.json \ "results").as[List[Event]]
-          Ok(views.txt.meetup.events(events))
-        }
-
-        catch {
-          case jsError : JsResultException => ( InternalServerError("An error occured processing the API data from meetup") )
-        }
+  def eventsText() = Action.async {
+    val time = DateTime.now.millis + "," + (DateTime.now + 4.weeks).millis
+    WS.url(EVENTS_URL ? ("time" -> time)).get().map { response => 
+      try {
+        val events = (response.json \ "results").as[List[Event]]
+        Ok(views.txt.meetup.events(events))
+      }
+      catch {
+        case jsError : JsResultException => ( InternalServerError("An error occured processing the API data from meetup") )
       }
     }
   }

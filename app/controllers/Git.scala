@@ -55,14 +55,12 @@ object Git extends Controller {
     }
   }
 
-  def fetch = Action { implicit request =>
+  def fetch = Action.async { implicit request =>
     val resultFuture  = scala.concurrent.Future { Right(repository.fetch) }
     val timeoutFuture = Promise.timeout(Left("git fetch timed out"), 2.seconds)
-    Async {
-      Future.firstCompletedOf(Seq(resultFuture, timeoutFuture)).map {
-        case Right(result) => Ok(views.html.git.fetch(result))
-        case Left(error)   => InternalServerError(error)
-      }
+    Future.firstCompletedOf(Seq(resultFuture, timeoutFuture)).map {
+      case Right(result) => Ok(views.html.git.fetch(result))
+      case Left(error)   => InternalServerError(error)
     }
   }
   
