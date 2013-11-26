@@ -16,7 +16,6 @@ import com.github.theon.uri.dsl._
 import models.meetup._
 import com.github.nscala_time.time.Imports._
 
-
 object Meetup extends Controller {
   private val KEY        = current.configuration.getString("meetup.key")
   private val GROUP_NAME = current.configuration.getString("meetup.group").getOrElse("Suncoast-LUG")
@@ -37,8 +36,14 @@ object Meetup extends Controller {
     Async {
       val time = DateTime.now.millis + "," + (DateTime.now + 4.weeks).millis
       WS.url(EVENTS_URL ? ("time" -> time)).get().map { response => 
-        val events = (response.json \"results").as[List[Event]]
-        Ok(views.txt.meetup.events(events))
+        try {
+          val events = (response.json \ "results").as[List[Event]]
+          Ok(views.txt.meetup.events(events))
+        }
+
+        catch {
+          case jsError : JsResultException => ( InternalServerError("An error occured processing the API data from meetup") )
+        }
       }
     }
   }

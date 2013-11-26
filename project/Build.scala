@@ -4,7 +4,7 @@ import play.Project._
 
 object ApplicationBuild extends Build {
   val appName         = "Upset"
-  val appVersion      = "2.1-SNAPSHOT"
+  val appVersion      = "2.2-SNAPSHOT"
 
   val appDependencies = Seq(
     // Add your project dependencies here,
