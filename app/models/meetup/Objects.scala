@@ -6,6 +6,7 @@ import com.github.nscala_time.time.Imports._
 import org.joda.time.format.DateTimeFormatterBuilder
 import org.joda.time.Duration
 
+
 case class Venue(
   name:      String,
   address_1: Option[String],
@@ -72,5 +73,21 @@ case class Event(
 
   private val wrapRegEx = """(.{1,76})\s""".r
   lazy val desc = wrapRegEx.replaceAllIn(description, m=>m.group(1)+"\n").split("\n").map(line => "    " + line).mkString("\n")
+}
+
+
+object Event {
+  def simple(name: String, time: Long) = Event(
+    name,
+    time,
+    None,
+    None,
+    None,
+    "url",
+    "description",
+    None,
+    None,
+    0,
+    0)
 }
 
